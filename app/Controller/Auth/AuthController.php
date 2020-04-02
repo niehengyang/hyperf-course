@@ -43,7 +43,7 @@ class AuthController extends BaseController
             $service = $this->serverResponse->getServerParams();
 
             $token = $this->jwt->getToken($userData);
-            $token_exp = $this->jwt->getTTL();;
+            $token_exp = $this->jwt->getTTL();
             $data  = [
                 'uid'       => $user->id,
                 'username'  => $user->username,
