@@ -38,7 +38,7 @@ class JwtAuthMiddleware implements MiddlewareInterface
 
         if  (strlen($token) > 0)  {
             $token = ucfirst($token);
-            $arr   = explode($this->prefix . ' ', $token);
+            $arr   = explode($this->prefix.' ', $token);
             $token = $arr[1] ?? '';
             try {
                 if (strlen($token) > 0 && $this->jwt->checkToken()) {

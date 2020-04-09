@@ -27,4 +27,5 @@ return [
             LogLevel::WARNING,
         ],
     ],
+    \Mews\Captcha\CaptchaServiceProvider::class,
 ];

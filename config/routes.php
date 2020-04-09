@@ -16,6 +16,7 @@ use Hyperf\HttpServer\Router\Router;
 /**登录**/
 Router::post('/user/login', 'App\Controller\Auth\AuthController@login');
 //Router::post('/user/register', 'App\Controller\Auth\RegisterController@register');
+Router::get('/user/captcha', 'App\Controller\Auth\AuthController@getCaptcha');
 
 
 //个人资料

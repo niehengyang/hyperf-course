@@ -14,6 +14,7 @@ return [
     'default' => [
         'driver' => Hyperf\Cache\Driver\RedisDriver::class,
         'packer' => Hyperf\Utils\Packer\PhpSerializerPacker::class,
+        'Captcha' => Mews\Captcha\Facades\Captcha::class,
         'prefix' => 'c:',
     ],
 ];
