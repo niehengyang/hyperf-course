@@ -25,6 +25,7 @@
         "hyperf/memory": "~1.1.0",
         "hyperf/process": "~1.1.0",
         "hyperf/redis": "~1.1.0",
+        "hyperf/utils": "~1.1.22",
         "phper666/jwt-auth": "^2.0"
     },
     "require-dev": {
@@ -75,7 +76,7 @@
     "repositories": {
         "packagist": {
             "type": "composer",
-            "url": "https://mirrors.aliyun.com/composer/"
+            "url": "https://packagist.phpcomposer.com"
         }
 
     }

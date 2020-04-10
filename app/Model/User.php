@@ -3,7 +3,6 @@
 declare (strict_types=1);
 namespace App\Model;
 
-use Hyperf\DbConnection\Model\Model;
 /**
  */
 class User extends Model
@@ -14,6 +13,8 @@ class User extends Model
      * @var string
      */
     protected $table = 'users';
+
+    protected $primaryKey = 'id';
     /**
      * The attributes that are mass assignable.
      *
@@ -49,4 +50,44 @@ class User extends Model
         'token_value',
         'token_exp'
     ];
+
+
+    /**
+     * The table relations.
+     *
+     * @var array
+     */
+    public function roles(){
+        return $this->belongsToMany(Role::class, 'user_has_roles', 'user_id', 'role_id');
+    }
+
+    public function permissions(){
+        return $this->belongsToMany(Role::class, 'user_has_permissions', 'user_id', 'permission_id');
+    }
+
+    /**
+     *建立关系
+     *
+     **/
+    public function scopeAssignRole($query,array $roles){
+
+        $roleIds = [];
+        $permissionIds = [];
+        foreach ($roles as $role){
+            array_push($roleIds,$role['id']);
+            $pIds = Role2permission::where('role_id',$role['id'])->pluck('permission_id')->toArray();
+            $permissionIds = array_merge($permissionIds,$pIds);
+
+        }
+
+        $this->roles()->attach($roleIds);
+
+        if (count($permissionIds)){
+            $permissionIds = array_unique($permissionIds);
+            $permissionIds = array_values($permissionIds);
+            $this->permissions()->attach($permissionIds);
+        }
+
+        return true;
+    }
 }

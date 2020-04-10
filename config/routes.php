@@ -12,6 +12,11 @@ declare(strict_types=1);
 
 use Hyperf\HttpServer\Router\Router;
 
+$middleware = [
+    App\Middleware\JwtAuthMiddleware::class,
+//    App\Middleware\PermissionMiddleware::class,
+];
+
 
 /**登录**/
 Router::post('/user/login', 'App\Controller\Auth\AuthController@login');
@@ -24,8 +29,11 @@ Router::addGroup('/user/', function () {
     Router::get('info','App\Controller\Admin\UserController@info');
     Router::post('logout', 'App\Controller\Admin\UserController@logout');
 //    Router::get('elasticsearch', 'App\Controller\UserController@elasticsearch');
+
+
+
 }, [
-    'middleware' => [App\Middleware\JwtAuthMiddleware::class]
+    'middleware' => $middleware
 ]);
 
 Router::addRoute(['GET', 'POST', 'HEAD'], '/', 'App\Controller\IndexController@index');
