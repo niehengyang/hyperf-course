@@ -26,7 +26,8 @@
         "hyperf/process": "~1.1.0",
         "hyperf/redis": "~1.1.0",
         "hyperf/utils": "~1.1.22",
-        "phper666/jwt-auth": "^2.0"
+        "phper666/jwt-auth": "^2.0",
+        "hyperf/validation": "^1.1"
     },
     "require-dev": {
         "swoft/swoole-ide-helper": "^4.2",

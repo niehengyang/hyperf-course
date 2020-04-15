@@ -43,7 +43,9 @@ Router::addGroup('/permission/', function () {
     Router::post('clean','App\Controller\Admin\PermissionController@cleanTree');
     Router::post('refresh','App\Controller\Admin\PermissionController@refreshTree');
     Router::get('nodes','App\Controller\Admin\PermissionController@getPermissionNode');
-    Router::delete('delete','App\Controller\Admin\PermissionController@deletePermissionNode');
+    Router::delete('delete/{id}','App\Controller\Admin\PermissionController@deletePermissionNode');
+    Router::get('item/{id}','App\Controller\Admin\PermissionController@item');
+    Router::put('edit/{id}','App\Controller\Admin\PermissionController@edit');
 
 }, [
     'middleware' => $middleware

@@ -33,6 +33,40 @@ class PermissionController extends BaseController
 
     }
 
+    /**
+     * 获取单个菜单
+     * @param int $id
+     *
+     * @return $permission
+     **/
+    public function item(int $id){
+
+        $permission = Permission::findOrFail($id);
+
+        return $this->success($permission);
+    }
+
+
+    /**
+     * 编辑菜单
+     * @param int $id
+     *
+     * @return {*}
+     **/
+    public function edit(int $id){
+
+        $permission = Permission::findOrFail($id);
+
+        $permission->update($this->request->all());
+
+        if ($permission->type == 'nav'){
+            Permission::refreshTree();
+        }
+
+        return $this->success('','编辑成功');
+    }
+
+
     //获取菜单权限
     public function getMenuTree(){
         $tree = new RedisTree();
@@ -83,19 +117,30 @@ class PermissionController extends BaseController
 
     }
 
-    //删除节点
-    public function deletePermissionNode($id){
+    /**
+     * 删除节点
+     * @param int $id
+     * @return {*}
+     **/
+    public function deletePermissionNode(int $id){
 
         $permission = Permission::find($id);
         if (is_null($permission)) return true;
 
+        $permission->delete();
         if ($permission->hasChildren){
-
             $permissionNodes = Permission::parentId($id)->get();
             foreach ($permissionNodes as $node){
+
                 $this->deletePermissionNode($node['id']);
             }
         }
-        $permission->delete();
+
+        //重建导航
+        if ($permission->type == 'nav'){
+            Permission::refreshTree();
+        }
+
+        return $this->success('','删除成功');
     }
 }

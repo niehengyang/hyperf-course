@@ -5,6 +5,7 @@ namespace App\Model;
 
 use App\Service\RedisTree;
 use Hyperf\Database\Model\Events\Retrieved;
+use Hyperf\Database\Model\Events\Updating;
 
 /**
  */
@@ -41,7 +42,8 @@ class Permission extends Model
      *
      * @var array
      */
-    protected $casts = [];
+    protected $casts = ['id' => 'integer','parent_id'=> 'integer'];
+
 
     //查询事件
     public function retrieved(Retrieved $event)
@@ -53,6 +55,13 @@ class Permission extends Model
             $this['hasChildren'] = false;
         }
     }
+
+    //更新事件
+    public function updating(Updating $event)
+    {
+        unset($this['hasChildren']);
+    }
+
 
     /**
      * The table relations.
