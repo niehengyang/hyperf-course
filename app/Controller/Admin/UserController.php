@@ -45,7 +45,7 @@ class UserController extends BaseController
             $user->token_exp = null;
             $user->save();
 
-            return $this->success('','退出登录成功');
+            return $this->success('退出登录成功');
         };
         return $this->failed('退出登录失败');
     }
