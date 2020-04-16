@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace App\Middleware;
 
 use App\Model\User;
-use Cassandra\Exception\UnauthorizedException;
-use Phper666\JwtAuth\Exception\JWTException;
 use Phper666\JwtAuth\Jwt;
 use Hyperf\Utils\Context;
 use Psr\Http\Message\ResponseInterface;
@@ -24,6 +22,7 @@ class JwtAuthMiddleware implements MiddlewareInterface
     protected $response;
     protected $prefix = 'Bearer';
     protected $jwt;
+    protected $user;
 
 
     public function __construct(HttpResponse $response, Jwt $jwt)

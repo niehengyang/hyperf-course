@@ -6,6 +6,7 @@ namespace App\Controller\Auth;
 
 use App\Controller\BaseController;
 use App\Model\User;
+use App\Service\CryptoDecrypt;
 use Hyperf\Config\Config;
 use Hyperf\Redis\Redis;
 use Phper666\JwtAuth\Jwt;
@@ -21,13 +22,6 @@ class AuthController extends BaseController
      */
     protected $jwt;
 
-
-    /**向量
-     * @var string
-     */
-    const IV = "1234567890123456";//16位
-    const KEY = "1234567890654321";//16位
-
     /**
      * 用户登录.
      *
@@ -41,7 +35,7 @@ class AuthController extends BaseController
 
         $user = User::query()->where('username', $username)->first();
 
-        $adminPassword = self::cryptoJsAesDecrypt($password);
+        $adminPassword = CryptoDecrypt::cryptoJsAesDecrypt($password);
 
 
         //验证用户账户密码
@@ -75,19 +69,6 @@ class AuthController extends BaseController
 
         return $this->failed('用户名或密码错误');
     }
-
-    /**
-     * 解密字符串
-     * @param string $str 字符串
-     * @return string
-     */
-    public static function cryptoJsAesDecrypt($str){
-        $str = str_replace(' ','+',$str);
-
-        $jsondata = openssl_decrypt($str, 'aes-128-cbc', self::KEY, OPENSSL_ZERO_PADDING , self::IV);
-        return trim($jsondata);
-    }
-
 
     /**
      *验证码获取

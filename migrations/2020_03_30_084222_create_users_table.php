@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->integer('city')->nullable()->comment('市级区域码');
             $table->integer('county')->nullable()->comment('区县级区域码');
             $table->string('status',2)->default(1)->comment('用户账号的状态，0：禁用，1：正常，默认为1，正常');
+            $table->integer('create_by')->default(0)->comment('创建人');
 
             $table->string('desc',500)->nullable()->comment('用户账号的描述信息');
             $table->text('token_value')->nullable()->comment('用户登录维护token');

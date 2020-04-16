@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Model\User;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Contract\RequestInterface as Request;
 use Hyperf\HttpServer\Contract\ResponseInterface;
-use Hyperf\Paginator\Paginator;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Container\ContainerInterface;
 use Swoole\Coroutine\Http\Client\Exception;
@@ -15,6 +15,7 @@ use Swoole\Coroutine\Http\Client\Exception;
 
 class BaseController
 {
+
     /**
      * @Inject
      *
@@ -39,6 +40,20 @@ class BaseController
      * @var ServerRequestInterface
      */
     protected $serverResponse;
+
+
+    /**
+     * 当前用户
+     *
+     * @var User
+     */
+    protected $currentUser;
+
+    public function __construct(Request $request)
+    {
+        $this->currentUser  = $request->getAttribute('user');
+    }
+
 
     /**
      * 请求成功

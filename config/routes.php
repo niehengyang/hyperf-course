@@ -51,5 +51,26 @@ Router::addGroup('/permission/', function () {
     'middleware' => $middleware
 ]);
 
+//账号
+Router::addGroup('/account/', function () {
+
+    Router::get('list','App\Controller\Admin\AccountController@index');
+    Router::post('create','App\Controller\Admin\AccountController@create');
+    Router::delete('delete/{id}','App\Controller\Admin\AccountController@delete');
+
+}, [
+    'middleware' => $middleware
+]);
+
+//角色
+Router::addGroup('/role/', function () {
+
+    Router::get('list','App\Controller\Admin\RoleController@index');
+    Router::post('create','App\Controller\Admin\RoleController@create');
+    Router::delete('delete/{id}','App\Controller\Admin\RoleController@delete');
+
+}, [
+    'middleware' => $middleware
+]);
 
 Router::addRoute(['GET', 'POST', 'HEAD'], '/', 'App\Controller\IndexController@index');

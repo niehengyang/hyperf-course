@@ -128,7 +128,7 @@ class PermissionTableSeeder extends Seeder
         $role = Role::findOrFail(1);
         $role->permissions()->sync([1, 2, 3, 4, 5, 6, 7, 8]);
         $user = User::where('id', 1)->first();
-        $user->assignRole([$role]);
+        $user->assignRole([$role->id]);
 
         //放入redis缓存
         Permission::refreshTree();

@@ -69,11 +69,13 @@ class PermissionController extends BaseController
 
     //获取菜单权限
     public function getMenuTree(){
+
         $tree = new RedisTree();
 
         $permnissions = $tree->getTree(0);
 
         return $this->success($permnissions);
+
     }
 
     //删除菜单树

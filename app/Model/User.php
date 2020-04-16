@@ -25,6 +25,7 @@ class User extends Model
         'name',
         'phone',
         'email',
+        'create_by',
         'province',
         'city',
         'county',
@@ -51,6 +52,7 @@ class User extends Model
         'token_exp'
     ];
 
+    protected $with = ['roles'];
 
     /**
      * The table relations.
@@ -58,11 +60,21 @@ class User extends Model
      * @var array
      */
     public function roles(){
-        return $this->belongsToMany(Role::class, 'user_has_roles', 'user_id', 'role_id');
+        return $this->belongsToMany(Role::class, 'user_has_roles',
+            'user_id', 'role_id');
     }
 
     public function permissions(){
-        return $this->belongsToMany(Role::class, 'user_has_permissions', 'user_id', 'permission_id');
+        return $this->belongsToMany(Role::class, 'user_has_permissions',
+            'user_id', 'permission_id');
+    }
+
+
+    /**
+     *权限限制
+     **/
+    public function scopeLimitOnly($query,$user){
+        return $query->where('create_by',$user->id)->orWhere('id',$user->id);
     }
 
     /**
@@ -71,21 +83,21 @@ class User extends Model
      **/
     public function scopeAssignRole($query,array $roles){
 
-        $roleIds = [];
         $permissionIds = [];
-        foreach ($roles as $role){
-            array_push($roleIds,$role['id']);
-            $pIds = Role2permission::where('role_id',$role['id'])->pluck('permission_id')->toArray();
+        foreach ($roles as $roleId){
+            $pIds = Role2permission::where('role_id',$roleId)->pluck('permission_id')->toArray();
             $permissionIds = array_merge($permissionIds,$pIds);
 
         }
 
-        $this->roles()->attach($roleIds);
+        $this->roles()->attach($roles);
+//        $this->roles()->sync($roles);
 
         if (count($permissionIds)){
             $permissionIds = array_unique($permissionIds);
             $permissionIds = array_values($permissionIds);
             $this->permissions()->attach($permissionIds);
+//            $this->permissions()->sync($permissionIds);
         }
 
         return true;
