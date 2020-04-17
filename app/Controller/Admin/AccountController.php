@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Controller\BaseController;
+use App\Model\Permission;
 use App\Model\User;
 use App\Service\CryptoDecrypt;
 
@@ -13,10 +14,10 @@ class AccountController extends BaseController
 
     public function index()
     {
-
+        $currentUser =  $this->request->getAttribute('user');
         $pageSize = $this->request->input('pageSize',10);
 
-        $users = User::limitOnly($this->currentUser)->paginate((integer)$pageSize);
+        $users = User::limitOnly($currentUser)->paginate((integer)$pageSize);
 
         return $this->paginater($users);
     }
@@ -32,17 +33,20 @@ class AccountController extends BaseController
 
     //创建
     public function create(){
-
+        $currentUser =  $this->request->getAttribute('user');
         $password = $this->request->input('password',false);
         $adminPassword = CryptoDecrypt::cryptoJsAesDecrypt($password);
         $roles = $this->request->input('roles',false);
 
         $user = new User($this->request->all());
-        $user->create_by = $this->currentUser['id'];
+        $user->create_by = $currentUser['id'];
         $user->password = password_hash($adminPassword,PASSWORD_DEFAULT);
         $user->save();
 
         $user->assignRole($roles);
+
+        //放入redis缓存
+        Permission::refreshTree($user->id);
 
         return $this->success('','创建成功');
     }
@@ -59,7 +63,10 @@ class AccountController extends BaseController
 
         $user->assignRole($roles);
 
-        return $this->success('','创建成功');
+        //放入redis缓存
+        Permission::refreshTree($user->id);
+
+        return $this->success('','修改成功');
     }
 
     //删除

@@ -41,21 +41,6 @@ class Role extends Model
     protected $with = ['admin'];
 
 
-//    //查询事件
-//    public function retrieved(Retrieved $event)
-//    {
-//        $permissionIds =  Role2permission::where('role_id',$this->id)->pluck('permission_id')->toArray();
-//
-//        $this['permissions'] = $permissionIds;
-//    }
-//
-//    //更新事件
-//    public function updating(Updating $event)
-//    {
-//        unset($this['permissions']);
-//    }
-
-
     /**
      * The table relations.
      *

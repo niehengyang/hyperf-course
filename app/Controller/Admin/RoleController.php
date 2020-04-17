@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Controller\Admin;
 
 use App\Controller\BaseController;
-use App\Model\Permission;
 use App\Model\Role;
 
 class RoleController extends BaseController
@@ -13,9 +12,10 @@ class RoleController extends BaseController
     //分页列表
     public function index()
     {
+        $currentUser =  $this->request->getAttribute('user');
         $pageSize = $this->request->input('pageSize',10);
 
-        $roles = Role::limitOnly($this->currentUser)->paginate((integer)$pageSize);
+        $roles = Role::limitOnly($currentUser)->paginate((integer)$pageSize);
 
         return $this->paginater($roles);
     }
@@ -37,6 +37,8 @@ class RoleController extends BaseController
     //创建
     public function create(){
 
+       $currentUser =  $this->request->getAttribute('user');
+
         $permissions = $this->request->input('permissions',false);
 
         if (!$permissions){
@@ -44,7 +46,7 @@ class RoleController extends BaseController
         }
 
         $role = new Role($this->request->all());
-        $role->create_by = $this->currentUser['id'];
+        $role->create_by = $currentUser['id'];
         $role->save();
 
         $role->assignPermissions($permissions);

@@ -74,7 +74,9 @@ class PermissionController extends BaseController
      **/
     public function getMenuTree(){
 
-        $tree = new RedisTree($this->currentUser->id);
+        $user = $this->request->getAttribute('user');
+
+        $tree = new RedisTree($user->id);
 
         $permnissions = $tree->getTree(0);
 

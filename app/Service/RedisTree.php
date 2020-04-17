@@ -143,7 +143,7 @@ class RedisTree {
 
         foreach ($arrayData as $key => $node){
 
-            $children = $this->getNodes($node['id']);
+            $children = $this->getTree($node['id']);
             if (count($children) == 0) continue;
 
             $node['children'] = $children;

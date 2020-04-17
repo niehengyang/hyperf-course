@@ -43,19 +43,6 @@ class BaseController
 
 
     /**
-     * 当前用户
-     *
-     * @var User
-     */
-    protected $currentUser;
-
-    public function __construct(Request $request)
-    {
-        $this->currentUser  = $request->getAttribute('user');
-    }
-
-
-    /**
      * 请求成功
      *
      * @param        $data
