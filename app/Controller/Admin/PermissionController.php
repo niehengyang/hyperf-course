@@ -10,6 +10,7 @@ use App\Service\RedisTree;
 
 class PermissionController extends BaseController
 {
+
     //分页列表
     public function list()
     {
@@ -67,10 +68,13 @@ class PermissionController extends BaseController
     }
 
 
-    //获取菜单权限
+    /**
+     * 获取菜单权限树
+     *
+     **/
     public function getMenuTree(){
 
-        $tree = new RedisTree();
+        $tree = new RedisTree($this->currentUser->id);
 
         $permnissions = $tree->getTree(0);
 
@@ -78,10 +82,17 @@ class PermissionController extends BaseController
 
     }
 
-    //删除菜单树
-    public function cleanTree(){
-        Permission::cleanTree();
-        return $this->success('');
+    /**
+     * 删除菜单树
+     * @param $tagId
+     * @return {*}
+     **/
+    public function cleanTree($tagId = false){
+
+        Permission::cleanTree($tagId);
+
+        return $this->success('','清除成功');
+
     }
 
     //刷新菜单树
@@ -107,13 +118,8 @@ class PermissionController extends BaseController
     //创建权限
     public function create(){
 
-        $type = $this->request->input('type',false);
-
         Permission::query()->create($this->request->all());
 
-        if ($type == 'nav'){
-            Permission::refreshTree();
-        }
 
         return $this->success('','创建成功');
 
@@ -140,7 +146,7 @@ class PermissionController extends BaseController
 
         //重建导航
         if ($permission->type == 'nav'){
-            Permission::refreshTree();
+            Permission::refreshTree($this->currentUser->id);
         }
 
         return $this->success('','删除成功');

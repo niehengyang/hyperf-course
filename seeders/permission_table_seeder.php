@@ -131,6 +131,6 @@ class PermissionTableSeeder extends Seeder
         $user->assignRole([$role->id]);
 
         //放入redis缓存
-        Permission::refreshTree();
+        Permission::refreshTree($user->id);
     }
 }

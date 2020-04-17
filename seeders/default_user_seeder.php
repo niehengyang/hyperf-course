@@ -23,7 +23,7 @@ class DefaultUserSeeder extends Seeder
             'id' => 1,
             'username' => '13999999999',
             'password' => password_hash('123456',PASSWORD_DEFAULT),
-            'name' => Str::random(10),
+            'name' => 'admin',
             'email' => '790227542@qq.com',
             'phone' => '17387916289',
             'desc' => 'Root账号',

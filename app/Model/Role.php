@@ -2,6 +2,9 @@
 
 declare (strict_types=1);
 namespace App\Model;
+use Hyperf\Database\Model\Events\Retrieved;
+use Hyperf\Database\Model\Events\Updating;
+
 /**
  */
 class Role extends Model
@@ -36,6 +39,22 @@ class Role extends Model
 
 
     protected $with = ['admin'];
+
+
+//    //查询事件
+//    public function retrieved(Retrieved $event)
+//    {
+//        $permissionIds =  Role2permission::where('role_id',$this->id)->pluck('permission_id')->toArray();
+//
+//        $this['permissions'] = $permissionIds;
+//    }
+//
+//    //更新事件
+//    public function updating(Updating $event)
+//    {
+//        unset($this['permissions']);
+//    }
+
 
     /**
      * The table relations.
@@ -76,7 +95,8 @@ class Role extends Model
      **/
     public function scopeAssignPermissions($query,array $permissions){
 
-        $this->permissions()->sync($permissions);
+        $this->permissions()->attach($permissions);
+//        $this->permissions()->sync($permissions);
 
         return true;
     }

@@ -49,4 +49,15 @@ class UserController extends BaseController
         };
         return $this->failed('退出登录失败');
     }
+
+    /**
+     * 加载基础信息
+     **/
+    public function portalInitData(){
+        //获取用户数据
+        $user = $this->request->getAttribute('user');
+
+        return $this->success($user);
+    }
+
 }

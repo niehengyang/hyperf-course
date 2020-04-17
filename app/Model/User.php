@@ -3,6 +3,9 @@
 declare (strict_types=1);
 namespace App\Model;
 
+use Hyperf\Database\Model\Events\Retrieved;
+use Hyperf\Database\Model\Events\Updating;
+
 /**
  */
 class User extends Model
@@ -70,6 +73,20 @@ class User extends Model
     }
 
 
+        //查询事件
+    public function retrieved(Retrieved $event)
+    {
+        $roleIds =  User2role::where('user_id',$this->id)->pluck('role_id')->toArray();
+
+        $this['roleIds'] = $roleIds;
+    }
+
+    //更新事件
+    public function updating(Updating $event)
+    {
+        unset($this['roleIds']);
+    }
+
     /**
      *权限限制
      **/
@@ -90,14 +107,14 @@ class User extends Model
 
         }
 
-        $this->roles()->attach($roles);
-//        $this->roles()->sync($roles);
+//        $this->roles()->attach($roles);
+        $this->roles()->sync($roles);
 
         if (count($permissionIds)){
             $permissionIds = array_unique($permissionIds);
             $permissionIds = array_values($permissionIds);
-            $this->permissions()->attach($permissionIds);
-//            $this->permissions()->sync($permissionIds);
+//            $this->permissions()->attach($permissionIds);
+            $this->permissions()->sync($permissionIds);
         }
 
         return true;

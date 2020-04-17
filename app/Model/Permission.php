@@ -91,14 +91,32 @@ class Permission extends Model
     }
 
     /**
+     * 获取导航权限
+     * @param $userId
+     * @return  array
+     **/
+    public function scopeGetNavMenu($query ,$userId = false){
+
+        if ($userId){
+            $permissionIds = User2permission::where('user_id',$userId)->pluck('permission_id')->toArray();
+            return $query->whereIn('id',$permissionIds)->type('nav')->get();
+        }else{
+
+           return $query->type('nav')->get();
+        }
+
+    }
+
+    /**
      * The cache backup in redis.
-     *
+     * @param array $permissions
+     * @param $tagId
      * @var array
      */
-    public static function setRedisBak(){
+    public static function setRedisBak($permissions,$tagId = false){
 
-        $permissions = self::type('nav')->get();
-        $redisTree = new RedisTree();
+        $redisTree = new RedisTree($tagId);
+
         foreach ($permissions as $permission){
             if ($permission->parent_id == 0){
                 $redisTree->setRootTree($permission->id,$permission->toArray());
@@ -109,14 +127,15 @@ class Permission extends Model
         }
     }
 
-
     /**
      * 删除所有缓存菜单
+     * @param $tagId
      *
      * @return  bool
      */
-    public static function cleanTree(){
-        $tree = new RedisTree();
+    public static function cleanTree($tagId = false){
+
+        $tree = new RedisTree($tagId);
         $tree->cleanTree();
 
         return true;
@@ -124,15 +143,19 @@ class Permission extends Model
 
 
     /**
-     * 刷新所有菜单
-     *
+     * 刷新菜单
+     * @param $tagId
      * @return  bool
      */
-    public static function refreshTree(){
+    public static function refreshTree($tagId = false){
 
-        $tree = new RedisTree();
+        $tree = new RedisTree($tagId);
         $tree->cleanTree();
-        Permission::setRedisBak();
+
+        $permissions = self::getNavMenu($tagId);
+
+        self::setRedisBak($permissions,$tagId);
+
 
         return true;
     }

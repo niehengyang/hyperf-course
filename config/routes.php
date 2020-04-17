@@ -57,7 +57,9 @@ Router::addGroup('/account/', function () {
     Router::get('list','App\Controller\Admin\AccountController@index');
     Router::post('create','App\Controller\Admin\AccountController@create');
     Router::delete('delete/{id}','App\Controller\Admin\AccountController@delete');
-
+    Router::get('initdata','App\Controller\Admin\UserController@portalInitData');
+    Router::get('item/{id}','App\Controller\Admin\AccountController@item');
+    Router::put('edit/{id}','App\Controller\Admin\AccountController@edit');
 }, [
     'middleware' => $middleware
 ]);
@@ -66,11 +68,15 @@ Router::addGroup('/account/', function () {
 Router::addGroup('/role/', function () {
 
     Router::get('list','App\Controller\Admin\RoleController@index');
+    Router::get('item/{id}','App\Controller\Admin\RoleController@item');
     Router::post('create','App\Controller\Admin\RoleController@create');
     Router::delete('delete/{id}','App\Controller\Admin\RoleController@delete');
+    Router::put('edit/{id}','App\Controller\Admin\RoleController@edit');
 
 }, [
     'middleware' => $middleware
 ]);
+
+
 
 Router::addRoute(['GET', 'POST', 'HEAD'], '/', 'App\Controller\IndexController@index');

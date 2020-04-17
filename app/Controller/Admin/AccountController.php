@@ -22,6 +22,14 @@ class AccountController extends BaseController
     }
 
 
+    //账号信息
+    public function item($id){
+
+        $account = User::findOrFail($id);
+
+        return $this->success($account);
+    }
+
     //创建
     public function create(){
 
@@ -40,6 +48,20 @@ class AccountController extends BaseController
     }
 
 
+    //编辑
+    public function edit($id){
+
+        $roles = $this->request->input('roleIds',false);
+
+        $user = User::findOrFail($id);
+
+        $user->update($this->request->all());
+
+        $user->assignRole($roles);
+
+        return $this->success('','创建成功');
+    }
+
     //删除
     public function delete($id){
 
@@ -52,5 +74,7 @@ class AccountController extends BaseController
            return $this->success('','删除成功');
        };
     }
+
+
 
 }

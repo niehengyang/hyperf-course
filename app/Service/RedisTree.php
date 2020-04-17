@@ -17,12 +17,20 @@ class RedisTree {
      */
     private $redis;
 
-    protected $rootKeyPre = "menuTreeRoot:";
-    protected $nodeKeyPre = "menuTreeNode:";
+    protected $rootKeyPre;
+    protected $nodeKeyPre;
 
-    public function __construct()
+    public function __construct($tagId = false)
     {
-       $this->redis = new Redis();
+        if ($tagId){
+            $this->rootKeyPre = "menuTreeRoot{$tagId}:";
+            $this->nodeKeyPre = "menuTreeNode{$tagId}:";
+        }else{
+            $this->rootKeyPre = "menuTreeRoot";
+            $this->nodeKeyPre = "menuTreeNode";
+        }
+
+        $this->redis = new Redis();
         $this->redis->connect(env('REDIS_HOST'), env('REDIS_PORT'));
     }
 
@@ -121,12 +129,13 @@ class RedisTree {
 
     /**
      * @param integer $id //ID
-     * @return $sortNodes
+     * @return $arrayData
      **/
     public function getTree(int $id){
 
         //节点当前数据
         $nodes = $this->redis->get($this->nodeKeyPre.$id);
+
         if (is_null($nodes)) return [];
         $nodes = json_decode($nodes,true);
 
@@ -134,13 +143,12 @@ class RedisTree {
 
         foreach ($arrayData as $key => $node){
 
-            $children = $this->getTree($node['id']);
+            $children = $this->getNodes($node['id']);
             if (count($children) == 0) continue;
 
             $node['children'] = $children;
             $arrayData[$key] = $node;
         }
-
 
         return $arrayData;
     }
@@ -174,8 +182,6 @@ class RedisTree {
 
 
     /**
-     *@param integer $id //ID
-     *
      * @return bool
      **/
     public function cleanTree(){
