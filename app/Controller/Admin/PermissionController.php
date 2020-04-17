@@ -56,12 +56,14 @@ class PermissionController extends BaseController
      **/
     public function edit(int $id){
 
+        $currentUser = $this->request->getAttribute('user');
+
         $permission = Permission::findOrFail($id);
 
         $permission->update($this->request->all());
 
         if ($permission->type == 'nav'){
-            Permission::refreshTree();
+            Permission::refreshTree($currentUser->id);
         }
 
         return $this->success('','编辑成功');
@@ -120,8 +122,15 @@ class PermissionController extends BaseController
     //创建权限
     public function create(){
 
-        Permission::query()->create($this->request->all());
+        $currentUser = $this->request->getAttribute('user');
 
+        $permission = Permission::query()->create($this->request->all());
+
+        if ($permission->type == 'nav'){
+
+            Permission::refreshTree($currentUser->id);
+
+        }
 
         return $this->success('','创建成功');
 
@@ -133,6 +142,8 @@ class PermissionController extends BaseController
      * @return {*}
      **/
     public function deletePermissionNode(int $id){
+
+        $currentUser = $this->request->getAttribute('user');
 
         $permission = Permission::find($id);
         if (is_null($permission)) return true;
@@ -148,7 +159,7 @@ class PermissionController extends BaseController
 
         //重建导航
         if ($permission->type == 'nav'){
-            Permission::refreshTree($this->currentUser->id);
+            Permission::refreshTree($currentUser->id);
         }
 
         return $this->success('','删除成功');

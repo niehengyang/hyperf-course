@@ -97,9 +97,11 @@ class Permission extends Model
      **/
     public function scopeGetNavMenu($query ,$userId = false){
 
-        if ($userId){
+        if ($userId != 1){
+
             $permissionIds = User2permission::where('user_id',$userId)->pluck('permission_id')->toArray();
             return $query->whereIn('id',$permissionIds)->type('nav')->get();
+
         }else{
 
            return $query->type('nav')->get();
